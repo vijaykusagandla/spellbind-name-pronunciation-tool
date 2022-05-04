@@ -10,6 +10,9 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	    maven {
+        url "https://azureai.azureedge.net/maven/"
+    }
 }
 
 dependencies {
@@ -17,8 +20,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.21.0", ext: "jar"
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	implementation 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.named('test') {

@@ -8,7 +8,7 @@ public class HealthCheckController {
 
 	@GetMapping("/healthCheck")
 	public String getDepartments() {
-		return "Application is working";
+		return "Application is working!!";
 	}
 
 }
