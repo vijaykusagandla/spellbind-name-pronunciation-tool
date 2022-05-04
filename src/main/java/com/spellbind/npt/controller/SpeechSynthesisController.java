@@ -2,8 +2,6 @@ package com.spellbind.npt.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 import javax.sound.sampled.AudioInputStream;
@@ -29,6 +27,7 @@ import com.microsoft.cognitiveservices.speech.SpeechSynthesisCancellationDetails
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
+import com.spellbind.npt.exception.NamePronunciationToolException;
 import com.spellbind.npt.model.InputData;
 
 @RestController
@@ -37,13 +36,11 @@ public class SpeechSynthesisController {
 	Logger log = LoggerFactory.getLogger(AudioFileController.class);
 
 	@GetMapping(path = "/speechSynthesis", consumes = "application/json")
-	public ResponseEntity<byte[]> download(@RequestBody InputData request)
-			throws IOException, SQLException, URISyntaxException {
+	public ResponseEntity<byte[]> speechSynthesis(@RequestBody InputData request) {
 
-		SpeechConfig speechConfig = SpeechConfig.fromSubscription("xxxx", "eastus");
-
+		SpeechConfig speechConfig = SpeechConfig.fromSubscription("subscriptionKey", "eastus");
 		speechConfig.setSpeechSynthesisVoiceName("en-US-JennyNeural"); // JennyNeural JennyMultiLingualNeural
-																		// en-US-JennyMultiLingualNeural
+
 		String fileName = "outputaudio.wav";
 		AudioConfig fileOutput = AudioConfig.fromWavFileOutput(fileName);
 		byte[] file = null;
@@ -51,31 +48,29 @@ public class SpeechSynthesisController {
 		SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig, fileOutput);
 
 		// Get text from the console and synthesize to the default speaker.
-
 		SpeechSynthesisResult speechRecognitionResult = null;
 		try {
 			speechRecognitionResult = speechSynthesizer.SpeakTextAsync(request.getText()).get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new NamePronunciationToolException("InterruptedException occured" + e);
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new NamePronunciationToolException("ExecutionException occured" + e);
 		}
 
 		if (speechRecognitionResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
-			System.out.println("Speech synthesized to speaker for text [" + request.getText() + "] ");
+			log.info("Speech synthesized to speaker for text [" + request.getText() + "] ");
 			file = speechRecognitionResult.getAudioData();
 
 		} else if (speechRecognitionResult.getReason() == ResultReason.Canceled) {
 			SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails
 					.fromResult(speechRecognitionResult);
-			System.out.println("CANCELED: Reason=" + cancellation.getReason());
+			log.info("CANCELED: Reason=" + cancellation.getReason());
 
 			if (cancellation.getReason() == CancellationReason.Error) {
-				System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-				System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-				System.out.println("CANCELED: Did you set the speech resource key and region values?");
+				log.error("CANCELED: ErrorCode=" + cancellation.getErrorCode());
+				log.error("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
+				log.error("CANCELED: Did you set the speech resource key and region values?");
+				throw new NamePronunciationToolException("CANCELED: ErrorCode=" + cancellation.getErrorCode());
 			}
 		}
 
