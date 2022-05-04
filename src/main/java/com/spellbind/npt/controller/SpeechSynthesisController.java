@@ -28,7 +28,7 @@ import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.spellbind.npt.exception.NamePronunciationToolException;
-import com.spellbind.npt.model.InputData;
+import com.spellbind.npt.model.InputText;
 
 @RestController
 public class SpeechSynthesisController {
@@ -36,7 +36,7 @@ public class SpeechSynthesisController {
 	Logger log = LoggerFactory.getLogger(AudioFileController.class);
 
 	@GetMapping(path = "/speechSynthesis", consumes = "application/json")
-	public ResponseEntity<byte[]> speechSynthesis(@RequestBody InputData request) {
+	public ResponseEntity<byte[]> speechSynthesis(@RequestBody InputText request) {
 
 		SpeechConfig speechConfig = SpeechConfig.fromSubscription("subscriptionKey", "eastus");
 		speechConfig.setSpeechSynthesisVoiceName("en-US-JennyNeural"); // JennyNeural JennyMultiLingualNeural

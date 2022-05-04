@@ -2,7 +2,7 @@ package com.spellbind.npt.model;
 
 import java.io.Serializable;
 
-public class InputData implements Serializable {
+public class InputText implements Serializable {
 
 	/**
 	 * 
