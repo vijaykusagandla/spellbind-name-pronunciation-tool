@@ -10,5 +10,4 @@ public class HealthCheckController {
 	public String getDepartments() {
 		return "Application is working!!";
 	}
-
 }
