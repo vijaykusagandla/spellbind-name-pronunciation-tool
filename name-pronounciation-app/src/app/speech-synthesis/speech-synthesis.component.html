@@ -1,0 +1,9 @@
+<div class="container">
+    <form [formGroup] ="textToSpeechForm" (ngSubmit) = "onSubmit()">
+    <div class="row">
+        <label for="First Name">Please enter preferred Name</label>
+          <input type="text" formControlName="fname" class="">
+      </div>
+      <button type="submit" [disabled]="textToSpeechForm.invalid">Pronounce</button>
+    </form>
+</div>

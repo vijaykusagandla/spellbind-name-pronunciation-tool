@@ -4,6 +4,8 @@ plugins {
 	id 'java'
 }
 
+apply plugin: 'jar'
+
 group = 'com.spellbind'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -14,6 +16,16 @@ repositories {
         url "https://azureai.azureedge.net/maven/"
     }
 }
+
+task deleteStaticFolder(type: Delete) {
+    def dirName = "src/main/resources/static" 
+    file( dirName ).list().each{
+        f -> 
+            delete "${dirName}/${f}"
+    }
+}
+
+processResources.dependsOn('name-pronounciation-app:build')
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
