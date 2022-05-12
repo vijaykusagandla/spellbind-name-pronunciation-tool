@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-apply plugin: 'jar'
+//apply plugin: 'jar'
 
 group = 'com.spellbind'
 version = '0.0.1-SNAPSHOT'
