@@ -17,7 +17,7 @@ repositories {
     }
 }
 
-task deleteStaticFolder(type: Delete) {
+/*task deleteStaticFolder(type: Delete) {
     def dirName = "src/main/resources/static" 
     file( dirName ).list().each{
         f -> 
@@ -25,7 +25,7 @@ task deleteStaticFolder(type: Delete) {
     }
 }
 
-processResources.dependsOn('name-pronounciation-app:build')
+processResources.dependsOn('name-pronounciation-app:build')*/
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
