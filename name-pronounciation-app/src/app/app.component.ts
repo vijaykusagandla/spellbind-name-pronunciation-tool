@@ -1,9 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { ColDef, FirstDataRenderedEvent } from 'ag-grid-community';
-import { Observable } from 'rxjs';
-import { FirstNameCellRenderer } from './cell-renderers/firstname.cellrenderer';
-import { Employee } from './data/model/employee';
+import { Router } from '@angular/router';
+import { AuthenticationService } from './services';
+import { Employee, Role } from './models';
 
 @Component({
   selector: 'app-root',
@@ -12,41 +10,18 @@ import { Employee } from './data/model/employee';
 })
 export class AppComponent {
   title = 'name-pronounciation-app';
-  apiURL: string = 'http://localhost:4200/spellbind';
+  currentEmployee: Employee;
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    })
-  };
-
-  columnDefs: ColDef[] = [
-    { field: "employeeId", sortable: true, filter: true, minWidth: 15 },
-    { field: "firstName", sortable: true, filter: true, minWidth: 250, cellRenderer: FirstNameCellRenderer },
-    { field: "middleName", sortable: true, filter: true, minWidth: 150 },
-    { field: "lastName", sortable: true, filter: true, minWidth: 70 },
-    { field: "preferredName", sortable: true, filter: true, minWidth: 80 },
-    { field: "dateOfBirth", sortable: true, filter: true, minWidth: 100 },
-    { field: "emailAddress", sortable: true, filter: true, minWidth: 100 },
-    { field: "addressLine1", sortable: true, filter: true, minWidth: 100 },
-    { field: "addressLine2", sortable: true, filter: true, minWidth: 100 },
-    { field: "zipCode", sortable: true, filter: true, minWidth: 100 },
-    { field: "phoneNumber", sortable: true, filter: true, minWidth: 100 }
-  ];
-
-  public defaultColDef: ColDef = {
-    resizable: true,
-  };
-
-  rowData: Observable<Employee[]>
-
-  constructor(private http: HttpClient) {
-    this.rowData = this.http.get<Employee[]>('http://localhost:8080/spellbind/listEmployees');
+  constructor(private router: Router, private authenticationService: AuthenticationService) {
+    this.authenticationService.currentEmployee.subscribe(x => this.currentEmployee = x);
   }
 
-  onFirstDataRendered(params: FirstDataRenderedEvent) {
-    params.api.sizeColumnsToFit();
+  get isAdmin() {
+    return this.currentEmployee && this.currentEmployee.role === Role.Admin;
   }
 
+  logOut() {
+    this.authenticationService.logout();
+    this.router.navigate(['/login']);
+  }
 }

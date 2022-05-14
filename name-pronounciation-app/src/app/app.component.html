@@ -1,13 +1,9 @@
-<nav class="nav justify-content-center">
-  <span class="navbar-brand mb-0 h1">Name Pronunciation Tool</span>
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentEmployee">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" routerLink="/" *ngIf="isAdmin">Home</a>
+    <a class="nav-item nav-link" (click)="logOut()">Logout</a>
+  </div>
 </nav>
-
-<div class="align-self-center mr-3">
-  <ag-grid-angular style="width: auto; height: 300px;" class="ag-theme-alpine" 
-    [rowData]="rowData | async"
-    [columnDefs]="columnDefs"
-    [defaultColDef]="defaultColDef"
-  >
-  </ag-grid-angular>
-</div>  
-
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
