@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.microsoft.cognitiveservices.speech.CancellationReason;
@@ -21,10 +22,16 @@ import com.spellbind.npt.exception.NamePronunciationToolException;
 public class SpeechSynthesisService {
 
 	Logger log = LoggerFactory.getLogger(SpeechSynthesisService.class);
+	
+	@Value("${AZURE_SUBSCRIPTION_KEY:NA}")
+	private String azureSubscriptionKey;
+	
+	@Value("${AZURE_REGION:NA}")
+	private String azureRegion;
 
 	public byte[] getSpeechSynthesis(String text) {
 		log.info("SpeechSynthesisService :: getSpeechSynthesis - begin");
-		SpeechConfig speechConfig = SpeechConfig.fromSubscription("your subscription key", "your region");
+		SpeechConfig speechConfig = SpeechConfig.fromSubscription(this.azureSubscriptionKey, this.azureRegion);
 		speechConfig.setSpeechSynthesisVoiceName("en-US-JennyNeural"); // JennyNeural JennyMultiLingualNeural
 
 		// Creates an audio out stream.
