@@ -16,16 +16,15 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.AudioOutputStream;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioOutputStream;
 import com.spellbind.npt.exception.NamePronunciationToolException;
-import com.spellbind.npt.model.InputText;
 
 @Service
 public class SpeechSynthesisService {
 
 	Logger log = LoggerFactory.getLogger(SpeechSynthesisService.class);
 
-	public byte[] getSpeechSynthesis(InputText request) {
+	public byte[] getSpeechSynthesis(String text) {
 		log.info("SpeechSynthesisService :: getSpeechSynthesis - begin");
-		SpeechConfig speechConfig = SpeechConfig.fromSubscription("xxx", "eastus");
+		SpeechConfig speechConfig = SpeechConfig.fromSubscription("your subscription key", "your region");
 		speechConfig.setSpeechSynthesisVoiceName("en-US-JennyNeural"); // JennyNeural JennyMultiLingualNeural
 
 		// Creates an audio out stream.
@@ -40,7 +39,7 @@ public class SpeechSynthesisService {
 		SpeechSynthesisResult result = null;
 		byte[] audioData = null;
 		try {
-			result = speechSynthesizer.SpeakTextAsync(request.getText()).get();
+			result = speechSynthesizer.SpeakTextAsync(text).get();
 			audioData = result.getAudioData();
 		} catch (InterruptedException e) {
 			throw new NamePronunciationToolException("InterruptedException occured" + e);
@@ -55,7 +54,7 @@ public class SpeechSynthesisService {
 		}
 		// Checks result.
 		if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
-			log.info("Speech synthesized for text [" + request.getText()
+			log.info("Speech synthesized for text [" + text
 					+ "], and the audio was written to output stream.");
 		} else if (result.getReason() == ResultReason.Canceled) {
 			SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails.fromResult(result);

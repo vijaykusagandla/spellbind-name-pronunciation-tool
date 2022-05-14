@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spellbind.npt.model.InputText;
 import com.spellbind.npt.service.SpeechSynthesisService;
 
+@CrossOrigin()
 @RestController
 public class SpeechSynthesisController {
 
@@ -21,10 +22,10 @@ public class SpeechSynthesisController {
 
 	Logger log = LoggerFactory.getLogger(SpeechSynthesisController.class);
 
-	@GetMapping(path = "/speechSynthesis", consumes = "application/json")
-	public ResponseEntity<byte[]> getSpeechSynthesis(@RequestBody InputText request) {
+	@GetMapping(path = "/speechSynthesis")
+	public ResponseEntity<byte[]> getSpeechSynthesis(@RequestParam String text) {
 		log.info("SpeechSynthesisController :: getSpeechSynthesis - begin");
-		byte[] speechSynthesisByteFormat = speechSynthesisService.getSpeechSynthesis(request);
+		byte[] speechSynthesisByteFormat = speechSynthesisService.getSpeechSynthesis(text);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 		headers.add("Pragma", "no-cache");
