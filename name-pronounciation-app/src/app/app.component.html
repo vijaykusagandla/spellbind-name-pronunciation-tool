@@ -1,9 +1,0 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentEmployee">
-  <div class="navbar-nav">
-    <a class="nav-item nav-link" routerLink="/" *ngIf="isAdmin">Home</a>
-    <a class="nav-item nav-link" (click)="logOut()">Logout</a>
-  </div>
-</nav>
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
