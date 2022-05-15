@@ -1,0 +1,15 @@
+@startuml loginNamePronunciationApp
+skinparam backgroundColor #EEEBDC
+skinparam handwritten true
+actor Employee
+Employee -> "login()" : username & password
+"login()" -> Employee : validate username & password
+activate "login()"
+Employee -> "play&StopNamePronunciation()" : name info
+"play&StopNamePronunciation()" -> Employee : ok
+Employee -> "recordNamePronunciation()" : wav audio format
+"recordNamePronunciation()" -> Employee : ok
+Employee -> "logout()"
+"logout()" -> Employee : ok
+deactivate "login()"
+@enduml
