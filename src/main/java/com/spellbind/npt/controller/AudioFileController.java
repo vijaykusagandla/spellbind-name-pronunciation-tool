@@ -3,6 +3,7 @@ package com.spellbind.npt.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spellbind.npt.dao.EmployeeDAO;
 import com.spellbind.npt.entity.Employee;
+import com.spellbind.npt.exception.NamePronunciationToolException;
 
-@CrossOrigin(
-	origins = { "http://127.0.0.1:5500" }
-)
+@CrossOrigin(origins = { "http://127.0.0.1:5500" })
 @RestController
 public class AudioFileController {
 
@@ -35,7 +35,8 @@ public class AudioFileController {
 	Logger log = LoggerFactory.getLogger(AudioFileController.class);
 
 	@RequestMapping(value = "/storeAudioFile", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> storeAudioFile(@RequestParam("recordId") String employeeId, @RequestPart("audioRecording") MultipartFile multipartFile)
+	public ResponseEntity<String> storeAudioFile(@RequestParam("recordId") String employeeId,
+			@RequestPart("audioRecording") MultipartFile multipartFile)
 			throws IOException, SQLException, URISyntaxException {
 		log.info("Persisting audio file: {}", multipartFile.getOriginalFilename());
 		employeeDAO.storeAudioFile(Long.valueOf(employeeId), multipartFile);
@@ -48,14 +49,16 @@ public class AudioFileController {
 		Employee employee = employeeDAO.findEmployeeById(Long.valueOf(employeeId));
 
 		byte[] audioBytes = employee.getAudioContent();
-
+		if (Objects.isNull(audioBytes)) {
+			throw new NamePronunciationToolException("Audio recording is not available");
+		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 		headers.add("Pragma", "no-cache");
 		headers.add("Expires", "0");
 
 		log.info("Retreived audio bytes: " + audioBytes);
-		
+
 		return ResponseEntity.ok().headers(headers).contentLength(audioBytes.length)
 				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(audioBytes);
 	}
