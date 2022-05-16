@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spellbind.npt.entity.Employee;
 import com.spellbind.npt.repository.EmployeeRepository;
 
-@CrossOrigin()
+@CrossOrigin(
+	origins = { "http://127.0.0.1:5500" }
+)
 @RestController
 public class EmployeeController {
 
